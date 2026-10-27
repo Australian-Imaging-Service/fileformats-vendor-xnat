@@ -10,7 +10,7 @@ class DicomSample(DicomImage):
     ext = None
 
 
-class Snapshot(MedicalImage):
+class Snapshots(MedicalImage):
     """Snapshot images stored alongside a XNAT scan resource"""
 
     @validated_property
