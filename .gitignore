@@ -21,6 +21,6 @@ __pycache__
 *.egg-info
 ~*
 /.venv
-/fileformats/vendor/australianimagingservice/_version.py
-/extras/fileformats/extras/vendor/australianimagingservice/_version.py
+/fileformats/vendor/xnat/_version.py
+/extras/fileformats/extras/vendor/xnat/_version.py
 .mypy_cache

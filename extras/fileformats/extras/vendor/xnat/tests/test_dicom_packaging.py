@@ -1,18 +1,15 @@
 from pathlib import Path
 
 import pydicom
-from pydicom.dataset import Dataset, FileMetaDataset
-from pydicom.uid import ExplicitVRLittleEndian
-
 import pytest
-
 from fileformats.application import Zip
-from fileformats.medimage import DicomDir, DicomImage, DicomSeries
-from fileformats.vendor.australianimagingservice import DicomSample
-
 from fileformats.extras.vendor.australianimagingservice.medimage import (
     SampleDicomDir,
 )
+from fileformats.medimage import DicomDir, DicomImage, DicomSeries
+from fileformats.vendor.australianimagingservice import DicomSample
+from pydicom.dataset import Dataset, FileMetaDataset
+from pydicom.uid import ExplicitVRLittleEndian
 
 
 def test_directory_uses_generic_zip_and_vendor_sample() -> None:
