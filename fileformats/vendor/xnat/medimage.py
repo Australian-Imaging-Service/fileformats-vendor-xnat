@@ -1,4 +1,6 @@
-from fileformats.medimage import DicomImage
+from fileformats.core import validated_property
+from fileformats.image import Gif
+from fileformats.medimage import DicomImage, MedicalImage
 
 
 class DicomSample(DicomImage):
@@ -6,3 +8,31 @@ class DicomSample(DicomImage):
     archive so its metadata can be extracted"""
 
     ext = None
+
+
+class Snapshot(MedicalImage):
+    """Snapshot images stored alongside a XNAT scan resource"""
+
+    @validated_property
+    def original_file(self) -> Gif:
+        """The original snapshot file"""
+        fspaths = [f for f in self.fspaths if f.name.endswith("_qc.gif")]
+        if not fspaths:
+            raise FileNotFoundError("No snapshot file ending with '_qc.gif' found")
+        elif len(fspaths) > 1:
+            raise FileExistsError(
+                f"Multiple snapshot files ending with '_qc.gif' found: {fspaths}"
+            )
+        return Gif(fspaths[0])
+
+    @validated_property
+    def thumbnail_file(self) -> Gif:
+        """The thumbnail snapshot file"""
+        fspaths = [f for f in self.fspaths if f.name.endswith("_qc_t.gif")]
+        if not fspaths:
+            raise FileNotFoundError("No snapshot file ending with '_qc_t.gif' found")
+        elif len(fspaths) > 1:
+            raise FileExistsError(
+                f"Multiple snapshot files ending with '_qc_t.gif' found: {fspaths}"
+            )
+        return Gif(fspaths[0])
