@@ -12,14 +12,14 @@ repos:
     rev: 26.5.1
     hooks:
       - id: black
-        exclude: ^(fileformats/australianimagingservice/_version\.py)$
+        exclude: ^(fileformats/xnat/_version\.py)$
         args:
           - -l 88
   - repo: https://github.com/codespell-project/codespell
     rev: v2.4.3
     hooks:
       - id: codespell
-        exclude: ^(fileformats/australianimagingservice/_version\.py)$
+        exclude: ^(fileformats/xnat/_version\.py)$
         args:
           - --ignore-words=.codespell-ignorewords
   - repo: https://github.com/PyCQA/flake8

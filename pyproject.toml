@@ -45,14 +45,14 @@ repository = "https://github.com/ArcanaFramework/fileformats-vendor-xnat"
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "fileformats/vendor/australianimagingservice/_version.py"
+version-file = "fileformats/vendor/xnat/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["fileformats"]
 
 [tool.black]
 target-version = ['py311']
-exclude = "fileformats/vendor/australianimagingservice/_version.py"
+exclude = "fileformats/vendor/xnat/_version.py"
 
 [tool.codespell]
 ignore-words = ".codespell-ignorewords"

@@ -3,11 +3,11 @@ from pathlib import Path
 import pydicom
 import pytest
 from fileformats.application import Zip
-from fileformats.extras.vendor.australianimagingservice.medimage import (
+from fileformats.extras.vendor.xnat.medimage import (
     SampleDicomDir,
 )
 from fileformats.medimage import DicomDir, DicomImage, DicomSeries
-from fileformats.vendor.australianimagingservice import DicomSample
+from fileformats.vendor.xnat import DicomSample
 from pydicom.dataset import Dataset, FileMetaDataset
 from pydicom.uid import ExplicitVRLittleEndian
 

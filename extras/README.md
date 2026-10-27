@@ -1,4 +1,4 @@
-# FileFormats-Vendor-australianimagingservice Extras
+# FileFormats-Vendor-xnat Extras
 
 This is a extras module for the
 [fileformats-vendor-xnat](<https://github.com/ArcanaFramework/fileformats-vendor-xnat) package, which provides additional functionality to format classes (i.e. aside from basic identification
