@@ -3,7 +3,7 @@ requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
-name = "fileformats-vendor-australianimagingservice"
+name = "fileformats-vendor-xnat"
 description = "Classes for representing different file formats in Python classes for use in type hinting in data workflows"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -39,20 +39,20 @@ test = [
 ]
 
 [project.urls]
-repository = "https://github.com/ArcanaFramework/fileformats-vendor-australianimagingservice"
+repository = "https://github.com/ArcanaFramework/fileformats-vendor-xnat"
 
 [tool.hatch.version]
 source = "vcs"
 
 [tool.hatch.build.hooks.vcs]
-version-file = "fileformats/vendor/australianimagingservice/_version.py"
+version-file = "fileformats/vendor/xnat/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["fileformats"]
 
 [tool.black]
 target-version = ['py311']
-exclude = "fileformats/vendor/australianimagingservice/_version.py"
+exclude = "fileformats/vendor/xnat/_version.py"
 
 [tool.codespell]
 ignore-words = ".codespell-ignorewords"

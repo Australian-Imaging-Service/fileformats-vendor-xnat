@@ -1,5 +1,5 @@
 # Implement 'extras' for the formats defined in
-# fileformats.vendor.australianimagingservice.medimage here, see
+# fileformats.vendor.xnat.medimage here, see
 # https://arcanaframework.github.io/fileformats/developer/extras.html
 
 import shutil
@@ -11,7 +11,7 @@ from fileformats.medimage import DicomCollection
 from fileformats.medimage.dicom import dicom_sort_key
 from pydra.compose import python
 
-from fileformats.vendor.australianimagingservice.medimage import (
+from fileformats.vendor.xnat.medimage import (
     DicomSample,
 )
 

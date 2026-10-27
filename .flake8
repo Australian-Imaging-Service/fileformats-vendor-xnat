@@ -7,8 +7,8 @@ exclude =
     docs/sphinxext/
     docs/tools/
     docs/conf.py
-    fileformats/vendor/australianimagingservice/_version.py
-    extras/fileformats/extras/vendor/australianimagingservice/_version.py
+    fileformats/vendor/xnat/_version.py
+    extras/fileformats/extras/vendor/xnat/_version.py
     docs/source/conf.py
 max-line-length = 88
 select = C,E,F,W,B,B950
