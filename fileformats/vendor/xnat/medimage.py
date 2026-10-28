@@ -25,6 +25,16 @@ class Snapshots(MedicalImage):
             )
         return Gif(fspaths[0])
 
+    @property
+    def content_labels(self) -> dict[str, str]:
+        """The content XNAT catalogues each file under, by file name. XNAT serves a
+        scan's snapshot and thumbnail from the files with ORIGINAL and THUMBNAIL
+        content in its SNAPSHOTS resource"""
+        return {
+            self.original_file.fspath.name: "ORIGINAL",
+            self.thumbnail_file.fspath.name: "THUMBNAIL",
+        }
+
     @validated_property
     def thumbnail_file(self) -> Gif:
         """The thumbnail snapshot file"""
