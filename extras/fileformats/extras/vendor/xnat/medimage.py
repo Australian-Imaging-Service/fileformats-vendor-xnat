@@ -7,13 +7,19 @@ import typing as ty
 from pathlib import Path
 
 from fileformats.core import converter
+from fileformats.generic import SetOf
+from fileformats.image import Png
 from fileformats.medimage import DicomCollection
 from fileformats.medimage.dicom import dicom_sort_key
+from PIL import Image
 from pydra.compose import python
 
 from fileformats.vendor.xnat.medimage import (
     DicomSample,
+    Snapshots,
 )
+
+from .snapshots import write_snapshots
 
 
 @converter
@@ -38,3 +44,23 @@ def SampleDicomDir(
     out_file.parent.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(sample, out_file)
     return DicomSample(out_file)
+
+
+@converter
+@python.define(outputs=["out_file"])  # type: ignore[untyped-decorator]
+def SnapshotPngs(
+    in_file: SetOf[Png],  # type: ignore[type-arg]
+    out_dir: ty.Optional[Path] = None,
+    stem: str = "snapshot",
+    thumbnail_size: int = 256,
+) -> Snapshots:
+    """Tile the PNGs of a set, in file-name order, into XNAT snapshots (see
+    :func:`write_snapshots`)"""
+    images = []
+    for fspath in sorted(in_file.fspaths, key=lambda p: p.name):
+        with Image.open(fspath) as image:
+            image.load()
+            images.append(image)
+    return write_snapshots(
+        images, out_dir=out_dir, stem=stem, thumbnail_size=thumbnail_size
+    )

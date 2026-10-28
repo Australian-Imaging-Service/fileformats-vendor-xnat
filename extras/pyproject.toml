@@ -7,7 +7,12 @@ name = "fileformats-vendor-xnat-extras"
 description = "Extra methods for accessing and manipulating the underlying data referenced by fileformats-vendor-xnat classes"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["fileformats >= 0.17", "fileformats-medimage", "pydra >= 1.0a9"]
+dependencies = [
+    "fileformats >= 0.17",
+    "fileformats-medimage",
+    "pillow",
+    "pydra >= 1.0a9",
+]
 license = { file = "LICENSE" }
 authors = [{ name = "Thomas G. Close", email = "tom.g.close@gmail.com" }]
 maintainers = [{ name = "Thomas G. Close", email = "tom.g.close@gmail.com" }]
