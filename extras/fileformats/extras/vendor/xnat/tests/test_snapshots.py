@@ -2,14 +2,22 @@ from pathlib import Path
 
 import pytest
 from fileformats.extras.vendor.xnat import write_snapshots
-from fileformats.extras.vendor.xnat.medimage import SnapshotPngs
+from fileformats.extras.vendor.xnat.medimage import SnapshotImages
 from fileformats.generic import SetOf
-from fileformats.image import Png
+from fileformats.image import Bitmap, Gif, Jpeg, Png, Tiff
 from fileformats.vendor.xnat import Snapshots
 from PIL import Image
 
 SIZES = [(40, 20), (30, 30), (20, 40), (40, 40), (10, 10)]
 COLOURS = ["red", "green", "blue", "yellow", "white"]
+IMAGE_FORMATS = [Bitmap, Gif, Jpeg, Png, Tiff]
+
+
+def _assert_close(
+    pixel: tuple[int, int, int], expected: tuple[int, int, int], tol: int = 8
+) -> None:
+    """JPEG compression and GIF quantisation can shift colours slightly"""
+    assert all(abs(p - e) <= tol for p, e in zip(pixel, expected)), (pixel, expected)
 
 
 def _pngs(work_dir: Path) -> SetOf[Png]:
@@ -24,7 +32,47 @@ def _pngs(work_dir: Path) -> SetOf[Png]:
 def test_snapshots_converter_is_registered() -> None:
     converter = Snapshots.get_converter(SetOf[Png])
     assert converter is not None
-    assert isinstance(converter.task, SnapshotPngs)
+    assert isinstance(converter.task, SnapshotImages)
+
+
+@pytest.mark.parametrize("image_format", IMAGE_FORMATS)
+def test_snapshots_converter_is_registered_for_image_format(
+    image_format: type,
+) -> None:
+    for source_format in (image_format, SetOf[image_format]):
+        converter = Snapshots.get_converter(source_format)
+        assert converter is not None
+        # Directly, not through a chain that converts to another image format first
+        assert isinstance(converter.task, SnapshotImages)
+
+
+@pytest.mark.parametrize("image_format", IMAGE_FORMATS)
+def test_snapshots_from_single_image(image_format: type, work_dir: Path) -> None:
+    fspath = work_dir / f"image{image_format.ext}"
+    Image.new("RGB", (40, 20), "red").save(fspath)
+    snapshots = Snapshots.convert(image_format(fspath))
+    assert snapshots.original_file.fspath.name == "snapshot_qc.gif"
+    assert snapshots.thumbnail_file.fspath.name == "snapshot_qc_t.gif"
+    with Image.open(snapshots.original_file.fspath) as grid:
+        # 1 image -> a single cell the size of the image
+        assert grid.size == (40, 20)
+        _assert_close(grid.convert("RGB").getpixel((20, 10)), (255, 0, 0))
+
+
+@pytest.mark.parametrize("image_format", IMAGE_FORMATS)
+def test_snapshots_from_set_of_images(image_format: type, work_dir: Path) -> None:
+    fspaths = []
+    for name, colour in [("a", "red"), ("b", "blue")]:
+        fspath = work_dir / f"{name}{image_format.ext}"
+        Image.new("RGB", (10, 10), colour).save(fspath)
+        fspaths.append(fspath)
+    snapshots = Snapshots.convert(SetOf[image_format](fspaths))
+    with Image.open(snapshots.original_file.fspath) as grid:
+        # 2 images -> 2 columns x 1 row
+        assert grid.size == (20, 10)
+        grid = grid.convert("RGB")
+        _assert_close(grid.getpixel((5, 5)), (255, 0, 0))
+        _assert_close(grid.getpixel((15, 5)), (0, 0, 255))
 
 
 def test_snapshots_tile_pngs_without_distortion(work_dir: Path) -> None:
@@ -50,7 +98,7 @@ def test_snapshots_tile_pngs_without_distortion(work_dir: Path) -> None:
 
 
 def test_snapshots_thumbnail_keeps_aspect_ratio(work_dir: Path) -> None:
-    outputs = SnapshotPngs(in_file=_pngs(work_dir), thumbnail_size=60)(
+    outputs = SnapshotImages(in_file=_pngs(work_dir), thumbnail_size=60)(
         cache_root=work_dir / "cache"
     )
     snapshots = Snapshots(outputs.out_file)
