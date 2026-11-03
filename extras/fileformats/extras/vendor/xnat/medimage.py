@@ -58,18 +58,8 @@ def SampleDicomDir(
 @converter(source_format=SetOf[Tiff], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
 @python.define(outputs=["out_file"])  # type: ignore[untyped-decorator]
 def SnapshotImages(
-    in_file: (  # type: ignore[type-arg]
-        Bitmap
-        | Gif
-        | Jpeg
-        | Png
-        | Tiff
-        | SetOf[Bitmap]
-        | SetOf[Gif]
-        | SetOf[Jpeg]
-        | SetOf[Png]
-        | SetOf[Tiff]
-    ),
+    # On one line because mypy versions report the SetOf errors on different lines
+    in_file: Bitmap | Gif | Jpeg | Png | Tiff | SetOf[Bitmap] | SetOf[Gif] | SetOf[Jpeg] | SetOf[Png] | SetOf[Tiff],  # type: ignore[type-arg]  # fmt: skip
     out_dir: ty.Optional[Path] = None,
     stem: str = "snapshot",
     thumbnail_size: int = 256,
