@@ -8,7 +8,7 @@ from pathlib import Path
 
 from fileformats.core import converter
 from fileformats.generic import SetOf
-from fileformats.image import Png
+from fileformats.image import Bitmap, Gif, Jpeg, Png, Tiff
 from fileformats.medimage import DicomCollection
 from fileformats.medimage.dicom import dicom_sort_key
 from PIL import Image
@@ -46,16 +46,36 @@ def SampleDicomDir(
     return DicomSample(out_file)
 
 
-@converter
+@converter(source_format=Bitmap, target_format=Snapshots)  # type: ignore[untyped-decorator]
+@converter(source_format=Gif, target_format=Snapshots)  # type: ignore[untyped-decorator]
+@converter(source_format=Jpeg, target_format=Snapshots)  # type: ignore[untyped-decorator]
+@converter(source_format=Png, target_format=Snapshots)  # type: ignore[untyped-decorator]
+@converter(source_format=Tiff, target_format=Snapshots)  # type: ignore[untyped-decorator]
+@converter(source_format=SetOf[Bitmap], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
+@converter(source_format=SetOf[Gif], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
+@converter(source_format=SetOf[Jpeg], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
+@converter(source_format=SetOf[Png], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
+@converter(source_format=SetOf[Tiff], target_format=Snapshots)  # type: ignore[untyped-decorator,misc]
 @python.define(outputs=["out_file"])  # type: ignore[untyped-decorator]
-def SnapshotPngs(
-    in_file: SetOf[Png],  # type: ignore[type-arg]
+def SnapshotImages(
+    in_file: (  # type: ignore[type-arg]
+        Bitmap
+        | Gif
+        | Jpeg
+        | Png
+        | Tiff
+        | SetOf[Bitmap]
+        | SetOf[Gif]
+        | SetOf[Jpeg]
+        | SetOf[Png]
+        | SetOf[Tiff]
+    ),
     out_dir: ty.Optional[Path] = None,
     stem: str = "snapshot",
     thumbnail_size: int = 256,
 ) -> Snapshots:
-    """Tile the PNGs of a set, in file-name order, into XNAT snapshots (see
-    :func:`write_snapshots`)"""
+    """Tile an image, or the images of a set in file-name order, into XNAT snapshots
+    (see :func:`write_snapshots`)"""
     images = []
     for fspath in sorted(in_file.fspaths, key=lambda p: p.name):
         with Image.open(fspath) as image:
